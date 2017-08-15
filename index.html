@@ -466,10 +466,65 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Aqui vem a listagem do programa <a href="exemplos/hello.cpp" class="bare">exemplos/hello.cpp</a> , mostrada na Listagem <a href="#exa_hello">Hello</a>, cuja unica funcionalidade é apresentar na tela uma imagem fornecida via linha de comando.</p>
 </div>
-<div id="exa_hello" class="listingblock cpp">
-<div class="title">hello.cpp</div>
+<div id="exa_hello" class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>include:exemplos/hello.cpp[Codigo, title="Codigo"]</code></pre>
+<pre class="pygments highlight"><code data-lang="cpp">#include &lt;iostream&gt;
+#include &lt;opencv2/opencv.hpp&gt;
+
+using namespace cv;
+
+int main(int argc, char** argv) {
+  VideoCapture cap;
+  Vec3b val;
+  Mat image, imagegray, imagecopia;
+  char tecla;
+
+  cap.open("MyVideo.avi");
+  int width = cap.get(CV_CAP_PROP_FRAM_WIDTH);
+  int height = cap.get(CV_CAP_PROP_FRAM_HEIGHT);
+  Size frameSize(width, height);
+  VideoWriter out (
+  		"MyVideoOut.avi",
+  		CV_FOURCC('P', 'I', 'M', '1'),
+  		20,
+  		frameSize,
+  		true);
+
+  cap.open(0);
+  if(!cap.isOpened()) {
+  	printf("Nao abriu a camera\nsaindo...");
+  	exit(0);
+  }
+
+  while(1) {
+  	cap &gt;&gt; image;
+
+	val[0] = 0;
+	val[1] = 0;
+	val[2] = 255;
+
+  	for(int i = 200; i &lt; 200; i++) {
+  		for(int j = 10; j &lt; 200; j++) {
+  			image.at&lt;Vec3b&gt;(i,j) = val;
+		}
+	}
+
+	val[0] = 0;
+	val[1] = 0;
+	val[2] = 255;
+
+	cvtColor(image, imagegray, CV_BGR2GRAY);
+	// imagegray.copyTo(imagecopia);
+	flip(imagegray, imagegray, 1);
+	imagecopia = imagegray.clone();
+  	imshow("image", imagegray);
+  	tecla = waitKey(30);
+  	if(tecla == ' ') {
+  		break;
+  	}
+  }
+  return 0;
+}</code></pre>
 </div>
 </div>
 </div>
@@ -477,7 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-08-15 15:34:35 BRT
+Last updated 2017-08-15 15:40:52 BRT
 </div>
 </div>
 <script type="text/x-mathjax-config">
